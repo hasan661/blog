@@ -26,7 +26,7 @@ class Blogs with ChangeNotifier {
         title: "Flutter",
         date: DateTime.now(),
         // postimageurl: "https://www.freecodecamp.org/news/content/images/2021/08/Flutter-logo.png"
-        comments: ["Dummy"]),
+        comments: ["Dummy","Dummy"]),
     Blog(
       id: "B2",
       post: "Vue.js is top growing front end web development framework",

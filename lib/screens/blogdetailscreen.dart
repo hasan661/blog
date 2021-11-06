@@ -2,15 +2,23 @@ import 'package:blog/providers/blog-details.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class BlogDetailScreen extends StatelessWidget {
+class BlogDetailScreen extends StatefulWidget {
   const BlogDetailScreen({Key? key}) : super(key: key);
   static const routeName = "/blogdetail";
 
   @override
+  _BlogDetailScreenState createState() => _BlogDetailScreenState();
+}
+
+class _BlogDetailScreenState extends State<BlogDetailScreen> {
+  bool commentbox = false;
+  @override
   Widget build(BuildContext context) {
     final blogData = Provider.of<Blogs>(context, listen: false).blogs;
     final index = ModalRoute.of(context)!.settings.arguments as int;
-    final comments = blogData[index].comments;
+    final comments = blogData[index].comments as List;
+    final noofcomments = comments.length;
+    String newComment = "";
 
     // print(comments);
     return Scaffold(
@@ -29,11 +37,11 @@ class BlogDetailScreen extends StatelessWidget {
                   Text(
                     blogData[index].title,
                     style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18,
-                      color: Theme.of(context).primaryColor
-                      // letterSpacing: letterspacing,
-                    ),
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18,
+                        color: Theme.of(context).primaryColor
+                        // letterSpacing: letterspacing,
+                        ),
                   ),
                   Text(
                     blogData[index].post,
@@ -55,12 +63,16 @@ class BlogDetailScreen extends StatelessWidget {
                       Icon(
                         Icons.thumb_up_alt_outlined,
                       ),
-                      Text("Like")
+                      Text("Like (${blogData[index].nooflikes.toString()})"),
                     ],
                   ),
                 ),
                 TextButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    setState(() {
+                      commentbox = true;
+                    });
+                  },
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -68,39 +80,80 @@ class BlogDetailScreen extends StatelessWidget {
                       Icon(
                         Icons.message,
                       ),
-                      Text("Comments")
+                      Text(
+                        "Comments ($noofcomments)",
+                      )
                     ],
                   ),
                 )
               ],
             ),
-            Expanded(
-              child: ListView.separated(
-                separatorBuilder: (context, int _) => Divider(),
-                itemBuilder: (ctx, indexComments) =>
-                
-                    // Card(child: Container(height: 20,child: Text())),
-                    ListTile(
-              leading: CircleAvatar(
-                  radius: 15,
-                  ),
-              title: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+            Flexible(
+              child: Column(
                 children: [
-                  Text(
-                   "Name of creator", style: TextStyle(color:  Theme.of(context).primaryColor, fontWeight: FontWeight.bold),
+                  ListView.separated(
+                    shrinkWrap: true,
+                    // shrinkWrap: true,
+                    separatorBuilder: (context, int _) => Divider(),
+                    itemBuilder: (ctx, indexComments) =>
+
+                        // Card(child: Container(height: 20,child: Text())),
+                        Column(
+                      children: [
+                        ListTile(
+                          leading: CircleAvatar(
+                            radius: 15,
+                          ),
+                          title: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "Name of creator",
+                                style: TextStyle(
+                                  color: Theme.of(context).primaryColor,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              Text(
+                                comments[indexComments].toString(),
+
+                                textAlign: TextAlign.justify,
+                                // textDirection: TextDirection.ltr,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+
+                    itemCount: comments.length,
                   ),
-                  Text(
-                    comments[indexComments].toString(),
-                    textAlign: TextAlign.justify,
-                    // textDirection: TextDirection.ltr,
+                  ListTile(
+                    leading: CircleAvatar(
+                      radius: 15,
+                    ),
+                    title: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Name of creator",
+                          style: TextStyle(
+                            color: Theme.of(context).primaryColor,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        TextField(
+                          onChanged: (val) {
+                            newComment = val;
+                          },
+                        )
+                      ],
+                    ),
+                    trailing: TextButton(onPressed: () {}, child: Text("Post")),
                   ),
                 ],
               ),
             ),
-                itemCount: comments.length,
-              ),
-            )
           ],
         ),
       ),

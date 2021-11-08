@@ -14,7 +14,9 @@ class _BlogDetailScreenState extends State<BlogDetailScreen> {
   bool commentbox = false;
   @override
   Widget build(BuildContext context) {
-    final blogData = Provider.of<Blogs>(context, listen: false).blogs;
+    final blogData = Provider.of<Blogs>(
+      context,
+    ).blogs;
     final index = ModalRoute.of(context)!.settings.arguments as int;
     final comments = blogData[index].comments as List;
     final noofcomments = comments.length;
@@ -88,47 +90,8 @@ class _BlogDetailScreenState extends State<BlogDetailScreen> {
                 )
               ],
             ),
-            Flexible(
-              child: Column(
-                children: [
-                  ListView.separated(
-                    shrinkWrap: true,
-                    // shrinkWrap: true,
-                    separatorBuilder: (context, int _) => Divider(),
-                    itemBuilder: (ctx, indexComments) =>
-
-                        // Card(child: Container(height: 20,child: Text())),
-                        Column(
-                      children: [
-                        ListTile(
-                          leading: CircleAvatar(
-                            radius: 15,
-                          ),
-                          title: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                "Name of creator",
-                                style: TextStyle(
-                                  color: Theme.of(context).primaryColor,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              Text(
-                                comments[indexComments].toString(),
-
-                                textAlign: TextAlign.justify,
-                                // textDirection: TextDirection.ltr,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-
-                    itemCount: comments.length,
-                  ),
-                  ListTile(
+            if(noofcomments==0)
+            ListTile(
                     leading: CircleAvatar(
                       radius: 15,
                     ),
@@ -149,11 +112,86 @@ class _BlogDetailScreenState extends State<BlogDetailScreen> {
                         )
                       ],
                     ),
-                    trailing: TextButton(onPressed: () {}, child: Text("Post")),
+                    trailing: Consumer<Blogs>(
+                      builder: (context, blog, _) => TextButton(
+                          onPressed: () {
+                            blog.addtocomment(blogData[index].id, newComment);
+                          },
+                          child: Text("Post")),
+                    ),
                   ),
-                ],
+
+             Flexible(
+              child: ListView.separated(
+                shrinkWrap: true,
+                // shrinkWrap: true,
+                separatorBuilder: (context, int _) => Divider(),
+                itemBuilder: (ctx, indexComments) =>
+              
+                    // Card(child: Container(height: 20,child: Text())),
+                    Column(
+                  children: [
+                    ListTile(
+                      leading: CircleAvatar(
+                        radius: 15,
+                      ),
+                      title: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Name of creator",
+                            style: TextStyle(
+                              color: Theme.of(context).primaryColor,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          Text(
+                            comments[indexComments].toString(),
+              
+                            textAlign: TextAlign.justify,
+                            // textDirection: TextDirection.ltr,
+                          ),
+                        ],
+                      ),
+                    ),
+                    if(indexComments+1==noofcomments)
+                ListTile(
+                leading: CircleAvatar(
+                  radius: 15,
+                ),
+                title: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "Name of creator",
+                      style: TextStyle(
+                        color: Theme.of(context).primaryColor,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    TextField(
+                      onChanged: (val) {
+                        newComment = val;
+                      },
+                    )
+                  ],
+                ),
+                trailing: Consumer<Blogs>(
+                  builder: (context, blog, _) => TextButton(
+                      onPressed: () {
+                        blog.addtocomment(blogData[index].id, newComment);
+                      },
+                      child: Text("Post")),
+                ),
+              ),
+                  ],
+                ),
+              
+                itemCount: comments.length,
               ),
             ),
+        
+            
           ],
         ),
       ),

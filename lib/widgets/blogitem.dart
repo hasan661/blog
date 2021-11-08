@@ -1,4 +1,5 @@
 import 'package:blog/providers/blog-details.dart';
+import 'package:blog/screens/addablog.dart';
 import 'package:blog/screens/blogdetailscreen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -10,52 +11,64 @@ class BlogItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final blogData = Provider.of<Blogs>(context, listen: false).blogs;
-    return ListView.separated(
-      separatorBuilder: (context, int index) => Divider(),
-      itemCount: blogData.length,
-      itemBuilder: (ctx, index) => ListTile(
-        onTap: () {
-          Navigator.of(context)
-              .pushNamed(BlogDetailScreen.routeName, arguments: index);
-        },
-        leading: CircleAvatar(
-            // radius: 1,
-            ),
-        title: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  blogData[index].title,
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18,
-                      color: Theme.of(context).primaryColor
-                      // letterSpacing: letterspacing,
-                      ),
-                ),
-                Text(
-                  DateFormat.yMMMMEEEEd()
-                      .format(
-                        blogData[index].date,
-                      )
-                      .toString(),
-                  style: TextStyle(
-                    color: Theme.of(context).primaryColor,
+    return Column(
+      children: [
+        Expanded(
+          child: ListView.separated(
+            separatorBuilder: (context, int index) => Divider(),
+            itemCount: blogData.length,
+            itemBuilder: (ctx, index) => ListTile(
+              onTap: () {
+                Navigator.of(context)
+                    .pushNamed(BlogDetailScreen.routeName, arguments: index);
+              },
+              leading: CircleAvatar(
+                  // radius: 1,
                   ),
-                )
-              ],
+              title: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        blogData[index].title,
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 18,
+                            color: Theme.of(context).primaryColor
+                            // letterSpacing: letterspacing,
+                            ),
+                      ),
+                      Text(
+                        DateFormat.yMMMMEEEEd()
+                            .format(
+                              blogData[index].date,
+                            )
+                            .toString(),
+                        style: TextStyle(
+                          color: Theme.of(context).primaryColor,
+                        ),
+                      )
+                    ],
+                  ),
+                  Text(
+                    blogData[index].post,
+                    textAlign: TextAlign.justify,
+                    // textDirection: TextDirection.ltr,
+                  ),
+                ],
+              ),
             ),
-            Text(
-              blogData[index].post,
-              textAlign: TextAlign.justify,
-              // textDirection: TextDirection.ltr,
-            ),
-          ],
+          ),
         ),
-      ),
+        FloatingActionButton(
+          onPressed: () {
+            Navigator.of(context).pushNamed(AddBlogScreen.routeName);
+          },
+          child: Icon(Icons.add),
+        )
+      ],
     );
   }
 }

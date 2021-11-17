@@ -30,20 +30,7 @@ class Blogs with ChangeNotifier {
         comments: [
           "Dummy",
           "Dummy",
-          "Dummy",
-          "Dummy",
-          "Dummy",
-          "Dummy",
-          "Dummy",
-          "Dummy",
-          "Dummy",
-          "Dummy",
-          "Dummy",
-          "Dummy",
-          "Dummy",
-          "Dummy",
-          "Dummy",
-          "Dummy",
+          
         ]),
     Blog(
         id: "B2",
@@ -51,8 +38,6 @@ class Blogs with ChangeNotifier {
         title: "Vue.JS",
         date: DateTime.now(),
         comments: []
-
-        // postimageurl: "https://3lhowb48prep40031529g5yj-wpengine.netdna-ssl.com/wp-content/uploads/2019/10/logo-vuejs-min.png"
         ),
   ];
 
@@ -73,4 +58,21 @@ class Blogs with ChangeNotifier {
     notifyListeners();
 
   }
+  void likeablog(var index){
+    if(_blogs[index].nooflikes==0){
+    _blogs[index].nooflikes=_blogs[index].nooflikes+1;
+    }
+    else{
+      _blogs[index].nooflikes=0;
+    }
+    notifyListeners();
+
+  }
+  void deleteablog(var index){
+    _blogs.removeAt(index);
+    notifyListeners();
+    
+
+  }
+
 }

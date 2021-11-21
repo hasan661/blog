@@ -8,7 +8,7 @@ class Blog {
   String post;
   String title;
   DateTime date;
-  int nooflikes;
+  bool isLiked;
   List comments;
 
   Blog({
@@ -16,7 +16,7 @@ class Blog {
     required this.id,
     required this.post,
     required this.title,
-    this.nooflikes = 0,
+    this.isLiked = false,
     required this.comments,
   });
 }
@@ -89,7 +89,7 @@ class Blogs with ChangeNotifier {
           "post": newBlog.post,
           "title": newBlog.title,
           "date": timestamp.toIso8601String(),
-          "nooflikes": newBlog.nooflikes,
+          "isLiked": newBlog.isLiked,
           "comments": []
         }));
     final newbloge = Blog(
@@ -104,25 +104,27 @@ class Blogs with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> likeablog(var index) async{
-    String id=_blogs[index].id;
+  Future<void> likeablog(var index) async {
+    String id = _blogs[index].id;
     Uri url = Uri.parse(
-        "https://blog-150f0-default-rtdb.firebaseio.com/blogs.json");
-    final likesnumber=await http.get(url);
-    var nooflikes=likesnumber.body;
+        "https://blog-150f0-default-rtdb.firebaseio.com/blogs/$id.json");
+    final isitliked = await http.get(url);
 
-    print(nooflikes);
-    // http.put(url,);
+    var initialstatus = json.decode(isitliked.body)['isLiked'];
 
-    if (_blogs[index].nooflikes == 0) {
-      _blogs[index].nooflikes = _blogs[index].nooflikes + 1;
-    } else {
-      _blogs[index].nooflikes = 0;
-    }
+    http.patch(url, body: json.encode({"isLiked": !initialstatus}));
+
+    _blogs[index].isLiked = !_blogs[index].isLiked;
+
     notifyListeners();
   }
 
   void deleteablog(var index) {
+    var id=_blogs[index].id;
+    Uri url = Uri.parse(
+        "https://blog-150f0-default-rtdb.firebaseio.com/blogs/$id.json");
+    http.delete(url);
+
     _blogs.removeAt(index);
     notifyListeners();
   }

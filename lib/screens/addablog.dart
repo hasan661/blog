@@ -10,7 +10,7 @@ class AddBlogScreen extends StatelessWidget {
     post: "",
     title: "",
     comments: [],
-    nooflikes: 0,
+    isLiked: false,
   );
   final _formkey = GlobalKey<FormState>();
 

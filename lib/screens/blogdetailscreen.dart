@@ -21,6 +21,7 @@ class _BlogDetailScreenState extends State<BlogDetailScreen> {
     final blogData = Provider.of<Blogs>(context, listen: true).blogs;
     final index = ModalRoute.of(context)!.settings.arguments as int;
     final comments = blogData[index].comments as List;
+    final isLiked=blogData[index].isLiked;
     final noofcomments = comments.length;
     String newComment = "";
 
@@ -54,7 +55,7 @@ class _BlogDetailScreenState extends State<BlogDetailScreen> {
                 ],
               ),
             ),
-            LikeAndComment(blogData: blogData, context: context, index: index, noofcomments: noofcomments,),
+            LikeAndComment(blogData: blogData, context: context, index: index, noofcomments: noofcomments, isLiked: isLiked,),
             if (noofcomments == 0)
               ListTile(
                 leading: CircleAvatar(

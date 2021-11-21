@@ -1,12 +1,30 @@
+import 'package:blog/providers/blog-details.dart';
 import 'package:blog/widgets/appdrawer.dart';
 import 'package:blog/widgets/blogitem.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-class BlogScreen extends StatelessWidget {
+class BlogScreen extends StatefulWidget {
   const BlogScreen({Key? key}) : super(key: key);
 
   @override
+  _BlogScreenState createState() => _BlogScreenState();
+}
+
+class _BlogScreenState extends State<BlogScreen> {
+  var isInit=true;
+  @override
+  void didChangeDependencies() {
+    if(isInit){
+      Provider.of<Blogs>(context).fetchblogs();
+
+    }
+    isInit=false;
+    super.didChangeDependencies();
+  }
+  @override
   Widget build(BuildContext context) {
+    
     return Scaffold(
       drawer: AppDrawer(),
       appBar: AppBar(

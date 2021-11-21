@@ -1,61 +1,53 @@
-import 'package:blog/providers/blog-details.dart';
-import 'package:blog/widgets/comments.dart';
-import 'package:blog/widgets/likeandcomment.dart';
 import 'package:flutter/material.dart';
+import 'package:blog/providers/blog-details.dart';
 import 'package:provider/provider.dart';
 
-class BlogDetailScreen extends StatefulWidget {
-  const BlogDetailScreen({Key? key}) : super(key: key);
-  static const routeName = "/blogdetail";
+class Comments extends StatelessWidget {
+  BuildContext context;
+  List<dynamic> comments;
+  int noofcomments;
+  String newComment;
+  List<dynamic> blogData;
+  int index;
+  Comments(this.blogData, this.comments, this.index, this.context,
+      this.newComment, this.noofcomments);
 
   @override
-  _BlogDetailScreenState createState() => _BlogDetailScreenState();
-}
-
-class _BlogDetailScreenState extends State<BlogDetailScreen> {
-  bool commentbox = false;
-  
-  @override
-
   Widget build(BuildContext context) {
-    final blogData = Provider.of<Blogs>(context, listen: true).blogs;
-    final index = ModalRoute.of(context)!.settings.arguments as int;
-    final comments = blogData[index].comments as List;
-    final noofcomments = comments.length;
-    String newComment = "";
+    return Flexible(
+      child: ListView.separated(
+        shrinkWrap: true,
+        // shrinkWrap: true,
+        separatorBuilder: (context, int _) => Divider(),
+        itemBuilder: (ctx, indexComments) =>
 
-    return Scaffold(
-      appBar: AppBar(),
-      body: Container(
-        padding: EdgeInsets.all(8),
-        child: Column(
+            // Card(child: Container(height: 20,child: Text())),
+            Column(
           children: [
             ListTile(
               leading: CircleAvatar(
-                  // radius: 1,
-                  ),
+                radius: 15,
+              ),
               title: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    blogData[index].title,
+                    "Name of creator",
                     style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 18,
-                        color: Theme.of(context).primaryColor
-                        // letterSpacing: letterspacing,
-                        ),
+                      color: Theme.of(context).primaryColor,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                   Text(
-                    blogData[index].post,
+                    comments[indexComments].toString(),
+
                     textAlign: TextAlign.justify,
                     // textDirection: TextDirection.ltr,
                   ),
                 ],
               ),
             ),
-            LikeAndComment(blogData: blogData, context: context, index: index, noofcomments: noofcomments,),
-            if (noofcomments == 0)
+            if (indexComments + 1 == noofcomments)
               ListTile(
                 leading: CircleAvatar(
                   radius: 15,
@@ -80,20 +72,22 @@ class _BlogDetailScreenState extends State<BlogDetailScreen> {
                 trailing: Consumer<Blogs>(
                   builder: (context, blog, _) => TextButton(
                       onPressed: () {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text("Comment Added"),
+                            duration: Duration(seconds: 2),
+                          ),
+                        );
                         blog.addtocomment(blogData[index].id, newComment);
                       },
                       child: Text("Post")),
                 ),
               ),
-
-            Comments(blogData, comments, index, context, newComment, noofcomments)
           ],
         ),
+
+        itemCount: comments.length,
       ),
     );
-    
   }
-
- 
-
 }

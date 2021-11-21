@@ -5,12 +5,13 @@ import 'package:provider/provider.dart';
 class AddBlogScreen extends StatelessWidget {
   static const routeName = "/addblog";
   var newpost = Blog(
-      date: DateTime.now(),
-      id: "",
-      post: "",
-      title: "",
-      comments: [],
-      nooflikes: 0);
+    date: DateTime.now(),
+    id: "",
+    post: "",
+    title: "",
+    comments: [],
+    nooflikes: 0,
+  );
   final _formkey = GlobalKey<FormState>();
 
   @override
@@ -23,6 +24,11 @@ class AddBlogScreen extends StatelessWidget {
       _formkey.currentState!.save();
       Provider.of<Blogs>(context, listen: false).addblog(newpost);
       Navigator.of(context).pop();
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text("Blog Added"),
+        ),
+      );
     }
 
     return Scaffold(
@@ -54,6 +60,7 @@ class AddBlogScreen extends StatelessWidget {
                     id: "",
                     post: newpost.post,
                     title: val.toString(),
+                    comments: []
                   )
                 },
               ),
@@ -63,10 +70,12 @@ class AddBlogScreen extends StatelessWidget {
                 ),
                 onSaved: (val) {
                   newpost = Blog(
-                      date: DateTime.now(),
-                      id: "",
-                      post: val.toString(),
-                      title: newpost.title);
+                    date: DateTime.now(),
+                    id: "",
+                    post: val.toString(),
+                    title: newpost.title,
+                    comments: []
+                  );
                 },
                 keyboardType: TextInputType.multiline,
                 maxLines: 100,

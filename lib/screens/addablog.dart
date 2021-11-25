@@ -5,13 +5,13 @@ import 'package:provider/provider.dart';
 class AddBlogScreen extends StatelessWidget {
   static const routeName = "/addblog";
   var newpost = Blog(
-    date: DateTime.now(),
-    id: "",
-    post: "",
-    title: "",
-    comments: [],
-    isLiked: false,
-  );
+      date: DateTime.now(),
+      id: "",
+      post: "",
+      title: "",
+      comments: [],
+      isLiked: false,
+      userId: "");
   final _formkey = GlobalKey<FormState>();
 
   @override
@@ -56,12 +56,12 @@ class AddBlogScreen extends StatelessWidget {
                 ),
                 onSaved: (val) => {
                   newpost = Blog(
-                    date: DateTime.now(),
-                    id: "",
-                    post: newpost.post,
-                    title: val.toString(),
-                    comments: []
-                  )
+                      date: DateTime.now(),
+                      id: "",
+                      post: newpost.post,
+                      title: val.toString(),
+                      comments: [],
+                      userId: "")
                 },
               ),
               TextFormField(
@@ -70,12 +70,12 @@ class AddBlogScreen extends StatelessWidget {
                 ),
                 onSaved: (val) {
                   newpost = Blog(
-                    date: DateTime.now(),
-                    id: "",
-                    post: val.toString(),
-                    title: newpost.title,
-                    comments: []
-                  );
+                      date: DateTime.now(),
+                      id: "",
+                      post: val.toString(),
+                      title: newpost.title,
+                      comments: [],
+                      userId: "");
                 },
                 keyboardType: TextInputType.multiline,
                 maxLines: 100,

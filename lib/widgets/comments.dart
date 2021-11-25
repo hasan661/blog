@@ -1,3 +1,4 @@
+import 'package:blog/providers/auth.dart';
 import 'package:flutter/material.dart';
 import 'package:blog/providers/blog-details.dart';
 import 'package:provider/provider.dart';
@@ -19,6 +20,7 @@ class Comments extends StatelessWidget {
         shrinkWrap: true,
         // shrinkWrap: true,
         separatorBuilder: (context, int _) => Divider(),
+        
         itemBuilder: (ctx, indexComments) =>
 
             // Card(child: Container(height: 20,child: Text())),
@@ -44,6 +46,7 @@ class Comments extends StatelessWidget {
                     textAlign: TextAlign.justify,
                     // textDirection: TextDirection.ltr,
                   ),
+                  IconButton(onPressed: (){print(comments[indexComments].values);}, icon: Icon(Icons.textsms_sharp))
                 ],
               ),
             ),

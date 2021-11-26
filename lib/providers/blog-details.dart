@@ -25,21 +25,34 @@ class Blog {
 
 class Blogs with ChangeNotifier {
   String authToken;
-  var previousBlogs;
+  // var previousBlogs;
   String userID;
-  List<Blog> _blogs = [];
-  Blogs(this.authToken, this.previousBlogs, this.userID);
+  List _blogs = [];
+  Blogs(this.authToken, this._blogs, this.userID);
 
-  Future<void> fetchblogs() async {
+  Future<void> fetchblogs([bool filterbyuser =false]) async {
+    final filterstring=filterbyuser? 'orderBy="creatorId"&equalTo="$userID"' : '';
     Uri url =
-        Uri.parse("https://blog-150f0-default-rtdb.firebaseio.com/blogs.json?auth=$authToken");
+        Uri.parse("https://blog-150f0-default-rtdb.firebaseio.com/blogs.json?auth=$authToken&$filterstring");
+    Uri likeurl = Uri.parse(
+        "https://blog-150f0-default-rtdb.firebaseio.com/userFavorites/$userID.json?auth=$authToken");
+
+    
+        
+    
+
     final response = await http.get(url);
     final extractedblogs = json.decode(response.body) as Map<String, dynamic>;
+    final likeresponse=await http.get(likeurl);
+    final extractedlike=json.decode(likeresponse.body);
+    
 
     final List<Blog> _loadedblogs = [];
 
     extractedblogs.forEach((key, value) {
+
       _loadedblogs.add(
+        
         Blog(
           date: DateTime.parse(value['date']),
           id: key,
@@ -47,6 +60,7 @@ class Blogs with ChangeNotifier {
           title: value['title'],
           userId: value['creatorID'],
           // comments: value["comments"]['comment']
+          isLiked: extractedlike == null ? false : extractedlike['isLiked'],
 
           comments:
               value['comments'] == null ? [] : value['comments']['comment'],
@@ -66,18 +80,19 @@ class Blogs with ChangeNotifier {
         "https://blog-150f0-default-rtdb.firebaseio.com/blogs/$id/comments.json?auth=$authToken");
     final index = _blogs.indexWhere((element) => element.id == id);
     final updatecomments = await http.get(url);
+    
 
-    List<String> newcomment = [];
+    List newcomment = [];
     // print(updatecomments.body);
     var nullornot = updatecomments.body.toString();
 
     List iteration =
         nullornot != "null" ? json.decode(updatecomments.body)['comment'] : [];
     iteration.forEach((element) {
-      newcomment.add(element.toString());
+      newcomment.add(element);
     });
 
-    newcomment.add(comment);
+    newcomment.add({"$userID":comment.toString()});
     final response =
         await http.put(url, body: json.encode({"comment": newcomment}));
 
@@ -96,7 +111,6 @@ class Blogs with ChangeNotifier {
           "post": newBlog.post,
           "title": newBlog.title,
           "date": timestamp.toIso8601String(),
-          "isLiked": newBlog.isLiked,
           "comments": [],
           "creatorID":userID
         }));
@@ -116,12 +130,15 @@ class Blogs with ChangeNotifier {
   Future<void> likeablog(var index) async {
     String id = _blogs[index].id;
     Uri url = Uri.parse(
-        "https://blog-150f0-default-rtdb.firebaseio.com/blogs/$id.json?auth=$authToken");
+        "https://blog-150f0-default-rtdb.firebaseio.com/userFavorites/$userID.json?auth=$authToken");
+        
     final isitliked = await http.get(url);
+    var test=isitliked.body.toString();
+    
+    
+     var initialstatus =(test != "null")? json.decode(isitliked.body)['isLiked']:false;
 
-    var initialstatus = json.decode(isitliked.body)['isLiked'];
-
-    http.patch(url, body: json.encode({"isLiked": !initialstatus}));
+    http.put(url, body: json.encode({"isLiked": !initialstatus}));
 
     _blogs[index].isLiked = !_blogs[index].isLiked;
 

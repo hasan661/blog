@@ -7,6 +7,7 @@ class Auth with ChangeNotifier {
   String? _token;
   String? _userID;
   DateTime? _expiryDate;
+  String? _email;
 
   bool get isAuth{
     return token!=null;
@@ -21,6 +22,8 @@ class Auth with ChangeNotifier {
     }
     
   }
+
+  
 
   String? get userid{
     if(_userID!=null)
@@ -47,6 +50,7 @@ class Auth with ChangeNotifier {
         ),
       ),
     );
+    
     notifyListeners();
   }
 

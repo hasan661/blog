@@ -4,12 +4,21 @@ import 'package:blog/widgets/appdrawer.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class UserProfile extends StatelessWidget {
+class UserProfile extends StatefulWidget {
   const UserProfile({Key? key}) : super(key: key);
 
   static const routeName = "/user-profile";
+
+  @override
+  _UserProfileState createState() => _UserProfileState();
+}
+
+class _UserProfileState extends State<UserProfile> {
+  var isInit=true;
+  
   @override
   Widget build(BuildContext context) {
+    
     final blogData = Provider.of<Blogs>(context).blogs;
     return Scaffold(
       drawer: AppDrawer(),
@@ -35,6 +44,4 @@ class UserProfile extends StatelessWidget {
       ),
     );
   }
-
-  
 }
